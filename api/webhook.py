@@ -23,8 +23,14 @@ def ask_huggingface(question: str) -> str:
         return "Errore di configurazione: token AI mancante."
 
     headers = {"Authorization": f"Bearer {HUGGINGFACE_TOKEN}"}
+    prompt = (
+        "Sei un receptionist dell'hotel Eurhotel di Rimini. "
+        "Offrite camere familiari, animazione per bambini, piscina, e colazione inclusa. "
+        "Rispondi in italiano in modo educato e pratico alla seguente domanda del cliente:\n"
+        f"{question}\nRisposta:"
+    )
     payload = {
-        "inputs": f"Rispondi come un receptionist d'albergo a questa domanda: {question}",
+        "inputs": prompt,
         "options": {"wait_for_model": True}
     }
     try:
