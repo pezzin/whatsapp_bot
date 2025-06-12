@@ -24,7 +24,7 @@ def ask_huggingface(question: str) -> str:
 
     headers = {"Authorization": f"Bearer {HUGGINGFACE_TOKEN}"}
     payload = {
-        "inputs": f"Domanda: {question}\nRisposta:",
+        "inputs": f"Rispondi come un receptionist d'albergo a questa domanda: {question}",
         "options": {"wait_for_model": True}
     }
     try:
@@ -39,7 +39,7 @@ def ask_huggingface(question: str) -> str:
         print("[DEBUG] Risposta Hugging Face (parsed):", result)
 
         if isinstance(result, list) and "generated_text" in result[0]:
-            return result[0]["generated_text"].split("Risposta:", 1)[-1].strip()
+            return result[0]["generated_text"].strip()
         elif isinstance(result, dict) and "error" in result:
             return "Il nostro assistente è momentaneamente non disponibile."
 
