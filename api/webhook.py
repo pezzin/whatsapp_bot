@@ -18,6 +18,10 @@ HUGGINGFACE_TOKEN = os.getenv("HF_API_TOKEN")
 
 
 def ask_huggingface(question: str) -> str:
+    if not HUGGINGFACE_TOKEN:
+        print("[ERRORE] Token Hugging Face mancante.")
+        return "Errore di configurazione: token AI mancante."
+
     headers = {"Authorization": f"Bearer {HUGGINGFACE_TOKEN}"}
     payload = {
         "inputs": f"Domanda: {question}\nRisposta:",
@@ -25,15 +29,24 @@ def ask_huggingface(question: str) -> str:
     }
     try:
         response = requests.post(HUGGINGFACE_API_URL, headers=headers, json=payload)
-        print("[DEBUG] Raw text response:", response.text)
+        print(f"[DEBUG] Status Code: {response.status_code}")
+        print(f"[DEBUG] Raw text response: {response.text}")
+
+        if response.status_code != 200:
+            return "Il nostro assistente AI è momentaneamente non disponibile."
+
         result = response.json()
-        print("[DEBUG] Risposta Hugging Face:", result)
+        print("[DEBUG] Risposta Hugging Face (parsed):", result)
+
         if isinstance(result, list) and "generated_text" in result[0]:
             return result[0]["generated_text"].split("Risposta:", 1)[-1].strip()
         elif isinstance(result, dict) and "error" in result:
             return "Il nostro assistente è momentaneamente non disponibile."
-        return str(result)
+
+        return "Risposta non riconosciuta dal modello."
+
     except Exception as e:
+        print(f"[ERRORE] Eccezione AI: {str(e)}")
         return f"Errore nell'assistente AI: {str(e)}"
 
 
