@@ -25,6 +25,7 @@ def ask_huggingface(question: str) -> str:
     }
     try:
         response = requests.post(HUGGINGFACE_API_URL, headers=headers, json=payload)
+        print("[DEBUG] Raw text response:", response.text)
         result = response.json()
         print("[DEBUG] Risposta Hugging Face:", result)
         if isinstance(result, list) and "generated_text" in result[0]:
