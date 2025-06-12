@@ -39,7 +39,9 @@ def ask_huggingface(question: str) -> str:
         print("[DEBUG] Risposta Hugging Face (parsed):", result)
 
         if isinstance(result, list) and "generated_text" in result[0]:
-            return result[0]["generated_text"].strip()
+            raw_text = result[0]["generated_text"]
+            clean_reply = raw_text.split("Risposta:", 1)[-1].strip()
+            return clean_reply
         elif isinstance(result, dict) and "error" in result:
             return "Il nostro assistente è momentaneamente non disponibile."
 
